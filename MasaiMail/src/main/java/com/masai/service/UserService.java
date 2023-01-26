@@ -15,9 +15,15 @@ public interface UserService {
 	
 	User sendEmail(SentMessage message)throws EmailException;
 	
-	User starMail(Integer messageId)throws EmailException;
+	User starRecivedMessage(Integer messageId)throws EmailException;
 	
-	User deleteMessage(Integer messageId)throws EmailException;
+	User starSentMessage(Integer messageId)throws EmailException;
+	
+	User deleteFromRecivedMessage(Integer messageId)throws EmailException;
+	
+	User deleteFromStarredMessage(Integer messageId)throws EmailException;
+	
+	User deleteFromSentMessage(Integer messageId)throws EmailException;
 	
 	List<RecivedMessage> getAllMessages()throws EmailException;
 	

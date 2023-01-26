@@ -17,8 +17,9 @@ public class MySecurityConfig {
 		http.authorizeHttpRequests( (auth)->auth
 				.requestMatchers("/masaimail/mail","/masaimail/starred", 
 						"/masaimail/login/*/*", "/masaimail/getuser/**", 
-						"/masaimail/starred/**", "/masaimail/delete/**",
-						 "/masaimail/user").authenticated()
+						"/masaimail/recived/**", "/masaimail/sent/**" ,
+						"/masaimail/starred/**","/masaimail/user")
+				        .authenticated()
 						.requestMatchers("/masaimail/register").permitAll()
 				
 		).csrf().disable()

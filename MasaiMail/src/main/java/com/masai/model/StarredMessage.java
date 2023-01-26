@@ -25,10 +25,11 @@ public class StarredMessage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
+	private String messageType;
 	private String email;
 	private String message;
 	
-	@ManyToOne()
+	@ManyToOne
 	@JsonBackReference
 	private User user;
 	

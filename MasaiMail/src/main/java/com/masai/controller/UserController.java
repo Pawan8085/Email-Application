@@ -53,16 +53,37 @@ public class UserController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
-	@PostMapping("/starred/{id}")
-	public ResponseEntity<User> starMessageHandler(@PathVariable Integer id) throws EmailException{
-		User user = userService.starMail(id);
+	@PostMapping("/recived/{id}")
+	public ResponseEntity<User> starRecivedMessageHandler(@PathVariable Integer id) throws EmailException{
+		User user = userService.starRecivedMessage(id);
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<User> delleteMessageHandler( @PathVariable Integer id) throws EmailException{
-		User user = userService.deleteMessage(id);
+	@PostMapping("/sent/{id}")
+	public ResponseEntity<User> starSentMessageHandler(@PathVariable Integer id) throws EmailException{
+		User user = userService.starSentMessage(id);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/recived/{id}")
+	public ResponseEntity<User> deleteRecivedMessageHandler( @PathVariable Integer id) throws EmailException{
+		User user = userService.deleteFromRecivedMessage(id);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/starred/{id}")
+	public ResponseEntity<User> deleteStarredMessageHandler( @PathVariable Integer id) throws EmailException{
+		User user = userService.deleteFromStarredMessage(id);
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/sent/{id}")
+	public ResponseEntity<User> deleteSentMessageHandler( @PathVariable Integer id) throws EmailException{
+		User user = userService.deleteFromSentMessage(id);
 		
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}

@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService{
 		
 	
 		Optional<User> opt = userRepository.findById(userName);
-		if(opt.isPresent()) {
+		
 			User user = opt.get();
 			user.getSentMessage().add(_message);
 			_message.setUser(user);
@@ -88,36 +88,30 @@ public class UserServiceImpl implements UserService{
 				return user;
 			}
 			else throw new EmailException("Invalid email id");
-			
-		}
-		else throw new EmailException("You have not signed in!");
-		
-		
-		
+				
 	}
-	@Override
-	public User starMail(Integer messageId) throws EmailException {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String userName = authentication.getName();
-		
 	
-		Optional<User> opt = userRepository.findById(userName);		
-		if(opt.isPresent()) {
-			User user = opt.get();
-//			List<StarredMessage> user.getStarredMessage();
+	@Override
+	public User starRecivedMessage(Integer messageId) throws EmailException {
+		
 			Optional<RecivedMessage> rmopt= recivedMessageRepository.findById(messageId);
 			if(rmopt.isPresent()) {
 				
 				
 				RecivedMessage rm = rmopt.get();
 				
-				//*avoiding adding duplicate in starredMessage 
+				//getting the user
+				User user = rm.getUser();
+				
+				//*avoiding adding duplicate 
 				List<StarredMessage> messages = starredMessageRespository.findByEmailAndMessage(rm.getEmail(), rm.getMessage());
 				
 				if(messages.size()==0) {
+					
 					StarredMessage smessage = new StarredMessage();
 					smessage.setEmail(rm.getEmail());
 					smessage.setMessage(rm.getMessage());
+					smessage.setMessageType("Recived");
 					user.getStarredMessage().add(smessage);
 					smessage.setUser(user);
 					
@@ -132,6 +126,7 @@ public class UserServiceImpl implements UserService{
 						StarredMessage smessage = new StarredMessage();
 						smessage.setEmail(rm.getEmail());
 						smessage.setMessage(rm.getMessage());
+						smessage.setMessageType("Recived");
 						user.getStarredMessage().add(smessage);
 						smessage.setUser(user);
 						
@@ -144,43 +139,116 @@ public class UserServiceImpl implements UserService{
 				 return user;
 			}
 			else throw new EmailException("Invalid message id ");
-		}
-		else throw new EmailException("You have not signed in!");
+		
+		
 		
 		
 	}
-	@Override
-	public User deleteMessage(Integer messageId) throws EmailException {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String userName = authentication.getName();
-		
 	
-		Optional<User> opt = userRepository.findById(userName);		
-		
-		if(opt.isPresent()) {
-			User user = opt.get();
+	@Override
+	public User starSentMessage(Integer messageId) throws EmailException {
+		Optional<SentMessage> smopt= sentMessageRespository.findById(messageId);
+		if(smopt.isPresent()) {
 			
-			System.out.println("Current user");
+			
+			SentMessage sm = smopt.get();
+			
+			//getting the user
+			User user = sm.getUser();
+			
+			//*avoiding adding duplicate 
+			List<StarredMessage> messages = starredMessageRespository.findByEmailAndMessage(sm.getEmail(), sm.getMessage());
+			
+			if(messages.size()==0) {
+				
+				StarredMessage smessage = new StarredMessage();
+				smessage.setEmail(sm.getEmail());
+				smessage.setMessage(sm.getMessage());
+				smessage.setMessageType("Sent");
+				user.getStarredMessage().add(smessage);
+				smessage.setUser(user);
+				
+				 starredMessageRespository.save(smessage);
+			}
+			else {
+				String currentUser = messages.get(0).getUser().getEmail();
+				
+				System.out.println(currentUser);
+				
+				if(!user.getEmail().equals(currentUser)) {
+					StarredMessage smessage = new StarredMessage();
+					smessage.setEmail(sm.getEmail());
+					smessage.setMessage(sm.getMessage());
+					smessage.setMessageType("Sent");
+					user.getStarredMessage().add(smessage);
+					smessage.setUser(user);
+					
+					 starredMessageRespository.save(smessage);
+				}
+			}
+			
+			
+			
+			 return user;
+		}
+		else throw new EmailException("Invalid message id ");
+	
+	}
+	
+	@Override
+	public User deleteFromRecivedMessage(Integer messageId) throws EmailException {
+	
+			
 			Optional<RecivedMessage> optRmessage = recivedMessageRepository.findById(messageId);
 			
 			if(optRmessage.isPresent()) {
 				RecivedMessage message = optRmessage.get();
 				
-//				System.out.println(message.getMessage());
-				List<StarredMessage> starredMessages = starredMessageRespository.findByEmailAndMessage(message.getEmail(), message.getMessage());
-				
-				if(starredMessages.size()>0) {
-					starredMessageRespository.delete(starredMessages.get(0));
-				}
-			
+				User user = message.getUser();
 				 recivedMessageRepository.delete(message);
 				 return user;
 				
 			}
-			else throw new EmailException("Invalid message id  - "+messageId);	
-		}
-		else throw new EmailException("You have not signed in!");
+			else throw new EmailException("Invalid message id  : "+messageId);	
+		
 	}
+	
+	@Override
+	public User deleteFromStarredMessage(Integer messageId) throws EmailException {
+		// TODO Auto-generated method stub
+		
+		Optional<StarredMessage> optSMessage = starredMessageRespository.findById(messageId);
+		
+		if(optSMessage.isPresent()) {
+			StarredMessage message = optSMessage.get();
+			
+			User user = message.getUser();
+			
+			starredMessageRespository.delete(message);
+			
+			return user;
+				
+		}
+		else throw new EmailException("Invalid message id  : "+messageId);	
+	}
+	
+	@Override
+	public User deleteFromSentMessage(Integer messageId) throws EmailException {
+		Optional<SentMessage> optSMessage = sentMessageRespository.findById(messageId);
+		
+		if(optSMessage.isPresent()) {
+			SentMessage message = optSMessage.get();
+			
+			User user = message.getUser();
+			
+			sentMessageRespository.delete(message);
+			
+			return user;
+				
+		}
+		else throw new EmailException("Invalid message id  : "+messageId);	
+	}
+	
 	@Override
 	public List<RecivedMessage> getAllMessages() throws EmailException {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -195,6 +263,7 @@ public class UserServiceImpl implements UserService{
 		}
 		else throw new EmailException("Invalid email id");
 	}
+	
 	@Override
 	public List<StarredMessage> getAllStarredMessages() throws EmailException {
 		
@@ -211,6 +280,7 @@ public class UserServiceImpl implements UserService{
 		}
 		else throw new EmailException("Invalid email id");
 	}
+	
 	@Override
 	public User LoginUser(String email, String password) throws EmailException {
           Optional<User> opt = userRepository.findById(email);
@@ -228,9 +298,12 @@ public class UserServiceImpl implements UserService{
 		else throw new EmailException("Invalid email - "+email);
 		
 	}
+	
 	@Override
 	public User updateUser(User user) throws EmailException {
 		return userRepository.save(user);
 	}
+	
+	
 
 }
