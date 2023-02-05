@@ -45,6 +45,20 @@ public class UserServiceImpl implements UserService{
 		
 		return userRepository.save(user);
 	}
+	
+	@Override
+	public User LoginUser() throws EmailException {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userName = authentication.getName();
+		
+		Optional<User> opt = userRepository.findById(userName);
+		if(opt.isPresent()) {
+			User user =opt.get();
+			
+			return user;
+		}
+		else throw new EmailException("Wrong email or password!");
+	}
 	@Override
 	public User getUserByEmail(String email) throws EmailException {
 		
@@ -281,23 +295,7 @@ public class UserServiceImpl implements UserService{
 		else throw new EmailException("Invalid email id");
 	}
 	
-	@Override
-	public User LoginUser(String email, String password) throws EmailException {
-          Optional<User> opt = userRepository.findById(email);
-		
-		if(opt.isPresent()) {
-			User user = opt.get();
-			
-			if(passwordEncoder.matches( password, user.getPassword())) {
-				return user;
-			}
-			else throw new EmailException("Invalid password!");
-			
-			
-		}
-		else throw new EmailException("Invalid email - "+email);
-		
-	}
+	
 	
 	@Override
 	public User updateUser(User user) throws EmailException {

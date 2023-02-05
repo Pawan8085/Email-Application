@@ -23,7 +23,7 @@ import com.masai.model.User;
 import com.masai.service.UserService;
 
 @RestController
-@RequestMapping("/masaimail")
+@RequestMapping("/mymail")
 public class UserController {
 	
 	@Autowired
@@ -37,6 +37,13 @@ public class UserController {
 		return new ResponseEntity<User>(saveduser, HttpStatus.CREATED);
 	}
 	
+	@PostMapping("/login")
+	public ResponseEntity<User> loginUserHandler() throws EmailException{
+		
+		User user = userService.LoginUser();
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
 	@GetMapping("/getuser/{email}")
 	public ResponseEntity<User> getUserByEmailHandler(@PathVariable String email) throws EmailException{
 		
@@ -104,12 +111,6 @@ public class UserController {
 		return new ResponseEntity<List<StarredMessage>>(messages,HttpStatus.OK);
 	}
 	
-	@PostMapping("/login/{email}/{password}")
-	 public ResponseEntity<User> loginHandler(@PathVariable String email, @PathVariable String password) throws EmailException{
-		
-		User user = userService.LoginUser(email, password);
-		return new ResponseEntity<User>(user, HttpStatus.OK);
-	}
 	
 	@PutMapping("/user")
 	public ResponseEntity<User> updateUserHandler(@RequestBody User user) throws EmailException{

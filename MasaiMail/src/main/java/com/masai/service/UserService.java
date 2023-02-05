@@ -29,7 +29,7 @@ public interface UserService {
 	
 	List<StarredMessage> getAllStarredMessages()throws EmailException;
 	
-	User LoginUser(String email, String password)throws EmailException;
+	User LoginUser()throws EmailException;
 	
 	User updateUser(User user)throws EmailException;
 }
