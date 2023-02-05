@@ -15,12 +15,12 @@ public class MySecurityConfig {
 	
 	
 		http.authorizeHttpRequests( (auth)->auth
-				.requestMatchers("/masaimail/mail","/masaimail/starred", 
-						"/masaimail/login/*/*", "/masaimail/getuser/**", 
-						"/masaimail/recived/**", "/masaimail/sent/**" ,
-						"/masaimail/starred/**","/masaimail/user")
+				.requestMatchers("/mymail/mail","/mymail/starred", 
+						"/mymail/login/*/*", "/mymail/getuser/**", 
+						"/mymail/recived/**", "/mymail/sent/**" ,
+						"/mymail/starred/**","/mymail/user")
 				        .authenticated()
-						.requestMatchers("/masaimail/register").permitAll()
+						.requestMatchers("/mymail/register").permitAll()
 				
 		).csrf().disable()
 		.httpBasic();
