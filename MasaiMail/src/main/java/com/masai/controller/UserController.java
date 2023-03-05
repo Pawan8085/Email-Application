@@ -29,6 +29,11 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@GetMapping 
+	public String welcome(){
+		return "Welcome to MyMail Application!";
+	}
+	
 	@PostMapping("/register")
 	public ResponseEntity<User> registerUserHandler(@RequestBody User user){
 		
