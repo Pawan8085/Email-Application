@@ -20,7 +20,7 @@ public class MySecurityConfig {
 						"/mymail/recived/**", "/mymail/sent/**" ,
 						"/mymail/starred/**","/mymail/user")
 				        .authenticated()
-						.requestMatchers("/mymail/register").permitAll()
+						.requestMatchers("/mymail/register", "/mymail").permitAll()
 				
 		).csrf().disable()
 		.httpBasic();

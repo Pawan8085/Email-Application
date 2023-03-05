@@ -29,7 +29,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping 
+	@GetMapping
 	public String welcome(){
 		return "Welcome to MyMail Application!";
 	}
