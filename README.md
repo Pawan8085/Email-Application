@@ -1,4 +1,5 @@
 # Email-Application
+## An individual project build within 4 days
 
 Tech stack :- Spring, Java, Hibernate, MySql, Spring Security
 
